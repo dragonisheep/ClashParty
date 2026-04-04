@@ -1,0 +1,10 @@
+{
+  "name": "自用图标包",
+  "description": "Private",
+  "icons": [
+    {
+      "name": "Claude",
+      "url": "https://github.com/anybodyiskiller-cpu/icons-escapism/blob/main/icons/claude.png"
+    },
+  ]
+}
