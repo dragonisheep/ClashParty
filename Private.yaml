@@ -1,4 +1,13 @@
 proxy-groups:
+  - name: XBOX
+    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/xbox.png
+    type: select
+    proxies:
+      - Rotate
+      - 节点选择
+      - 手动切换
+      - 美国节点
+      - DIRECT
   - name: 节点选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png
     type: select
@@ -16,6 +25,13 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png
     include-all: true
     type: select
+  - name: Rotate
+    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/xbox.png
+    type: select
+    include-all: true
+    filter: "(?i)(美|🇺🇸|US|USA|United States|America|Portland|Dallas|Oregon|Phoenix|Fremont|Silicon|Vegas|Los Angeles|San Jose|Santa Clara|Seattle|Chicago|New York|Washin)"
+    url: http://www.gstatic.com/generate_204
+    interval: 300
   - name: 自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
     type: url-test
@@ -37,7 +53,7 @@ proxy-groups:
       - 手动切换
       - DIRECT
   - name: OpenAi
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ChatGPT.png
     type: select
     proxies:
       - 节点选择
@@ -65,7 +81,7 @@ proxy-groups:
       - 手动切换
       - DIRECT
   - name: Claude
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Claude.png
     type: select
     proxies:
       - 节点选择
@@ -141,6 +157,7 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png
     type: select
     proxies:
+      - Rotate
       - 节点选择
       - DIRECT
       - 美国节点
@@ -291,6 +308,8 @@ proxy-groups:
     include-all: true
     type: select
     proxies:
+      - XBOX
+      - Rotate
       - 节点选择
       - 手动切换
       - 自动选择
@@ -321,6 +340,13 @@ proxy-groups:
       - 韩国节点
 
 rule-providers:
+  xbox:
+    type: http
+    behavior: classical
+    format: text
+    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Xbox/Xbox.list
+    path: ./ruleset/xbox.list
+    interval: 86400
   LocalAreaNetwork:
     url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/LocalAreaNetwork.list
     path: ./ruleset/LocalAreaNetwork.list
@@ -533,6 +559,7 @@ rule-providers:
     type: http
 
 rules:
+  - "RULE-SET,xbox,XBOX"
   - "RULE-SET,LocalAreaNetwork,全球直连"
   - "RULE-SET,UnBan,全球直连"
   - "RULE-SET,BanAD,广告拦截"
