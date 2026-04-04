@@ -1,0 +1,61 @@
+function main(config) {
+  // 1) Rule Provider
+  if (!config["rule-providers"]) config["rule-providers"] = {};
+  config["rule-providers"]["xbox"] = {
+    type: "http",
+    behavior: "classical",
+    format: "text", // 注意：如果使用Clash/yaml格式链接，这里建议改为 'yaml'；如果是Surge链接则用 'text'
+    url: "https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Xbox/Xbox.list",
+    path: "./ruleset/xbox.list",
+    interval: 86400,
+  };
+
+  // 2) Proxy Group: XBOX
+  if (!Array.isArray(config["proxy-groups"])) config["proxy-groups"] = [];
+  const groups = config["proxy-groups"];
+  
+  // 创建现有组名的集合，方便快速查找
+  const existNames = new Set(groups.map((g) => g && g.name).filter(Boolean));
+
+  // A. 定义你明确想要的固定组名
+  const specificWanted = ["Rotate", "节点选择", "Proxy", "手动切换"];
+  const staticMatches = specificWanted.filter((n) => existNames.has(n));
+
+  // B. 【新增】模糊匹配包含“美国”的组名
+  // 过滤出名字中包含"美国"的组，并提取它们的名字
+  const usMatches = groups
+    .filter((g) => g && g.name && g.name.includes("美国"))
+    .map((g) => g.name);
+
+  // C. 合并结果 (固定组 + 美国组) 并去重
+  let proxies = [...staticMatches, ...usMatches];
+  // 使用 Set 去重，防止某个组既在固定列表里，又包含“美国”字样
+  proxies = [...new Set(proxies)];
+
+  // D. 兜底策略：如果列表为空或者为了保险，总是加上 DIRECT
+  if (!proxies.includes("DIRECT")) proxies.push("DIRECT");
+
+  // E. 清理旧的 XBOX 组 (防止重复添加)
+  config["proxy-groups"] = groups.filter((g) => !(g && g.name === "XBOX"));
+
+  // F. 将新的 XBOX 组插入到最前面
+  config["proxy-groups"].unshift({
+    name: "XBOX",
+    type: "select",
+    icon: "https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/xbox.png",
+    proxies: proxies, // 使用我们组合好的节点列表
+  });
+
+  // 3) Rules: make Xbox highest priority
+  if (!Array.isArray(config["rules"])) config["rules"] = [];
+
+  // De-dup (清理旧规则)
+  config["rules"] = config["rules"].filter(
+    (r) => !(typeof r === "string" && r.trim() === "RULE-SET,xbox,XBOX")
+  );
+
+  // Insert at top (最高优先级)
+  config["rules"].unshift("RULE-SET,xbox,XBOX");
+
+  return config;
+}
